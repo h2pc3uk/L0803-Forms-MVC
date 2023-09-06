@@ -1,0 +1,202 @@
+﻿@{ ViewData["Title"] = "Home Page"; }
+
+<form>
+    <div class="form-group row">
+        <label for="account" class="col-sm-2 col-form-label">帳號：</label>
+        <div class="col-sm-10 row">
+            <div class="form-group col-md-3">
+                <input
+                    type="text"
+                    class="form-control"
+                    id="account-0"
+                    maxlength="4" />
+            </div>
+            <div class="form-group col-md-2">
+                <input
+                    type="text"
+                    class="form-control"
+                    id="account-1"
+                    maxlength="2" />
+            </div>
+            <div class="form-group col-md-4">
+                <input
+                    type="text"
+                    class="form-control"
+                    id="account-2"
+                    maxlength="5" />
+            </div>
+            <div class="form-group col-md-1">
+                <input
+                    type="text"
+                    class="form-control"
+                    id="account-3"
+                    maxlength="1" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="sub-account" class="col-sm-2 col-form-label">支號：</label>
+        <div class="col-sm-10 row">
+            <div class="form-group col-md-10">
+                <input
+                    type="text"
+                    class="form-control"
+                    id="sub-account"
+                    maxlength="4" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="" class="col-sm-2 col-form-label">還本方式：</label>
+        <div class="col-sm-10 row">
+            <div class="form-group col-md-1">
+                <input
+                    type="text"
+                    class="form-control"
+                    id="repayment-method"
+                    maxlength="2" />
+            </div>
+            <div class="form-group col-md-9">
+                <input type="text" id="repayment-method-des" class="form-control" maxlength="11" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="" class="col-sm-2 col-form-label">繳息期數：</label>
+        <div class="col-sm-10 row">
+            <div class="form-group col-md-1">
+                <input
+                    type="text"
+                    class="form-control"
+                    id="installments"
+                    maxlength="2" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="" class="col-sm-2 col-form-label">計息止日：</label>
+        <div class="col-sm-10 row">
+            <div class="form-group col-md-10">
+                <input type="text" class="form-control" id="" maxlength="5" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="" class="col-sm-2 col-form-label">還本金額：</label>
+        <div class="col-sm-10 row">
+            <div class="form-group col-md-10">
+                <input
+                    type="text"
+                    class="form-control"
+                    id="loan-principal-repayment"
+                    maxlength="9" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="" class="col-sm-2 col-form-label">違約金計收方式：</label>
+        <div class="col-sm-10 row">
+            <div class="form-group col-md-1">
+                <input type="text" class="form-control" id="" maxlength="1" />
+            </div>
+            <div class="form-group col-md-9">
+                <input type="text" class="form-control" id="" maxlength="9" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="" class="col-sm-2 col-form-label">違約金：</label>
+        <div class="col-sm-10 row">
+            <div class="form-group col-md-10">
+                <input type="text" class="form-control" id="" maxlength="10" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="" class="col-sm-2 col-form-label">預定交易日：</label>
+        <div class="col-sm-10 row">
+            <div class="form-group col-md-7">
+                <input type="text" class="form-control" id="" maxlength="10" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("input[type='text']").keyup(function () {
+            // If the length of the input's value is equal to its max length
+            if ($(this).val().length == $(this).attr("maxlength")) {
+                // Focus on the next input
+                $(this)
+                    .closest("div.form-group")
+                    .next()
+                    .find("input")
+                    .first()
+                    .focus();
+            }
+        });
+        
+        $("#account-3").keyup(function () {
+            // if ($(this).val().length === $(this).attr("maxlength")) {
+            //     console.log(`this value is ${this.val()}`);
+            //    
+            // }
+            $.ajax({
+                url: '/Home/GenerateFakeData',
+                method: 'GET',
+                data: {
+                    account: $('#account-0').val() + $('#account-1').val() + $('#account-2').val() + $('#account-3').val()
+                },
+                success: function (response) {
+                    console.log('Success', response);
+                    $('#repayment-method').val(response.repaymentMethodsNumber);
+                    $('#repayment-method-des').val(response.repaymentMethodsDescription)
+                    $('#installments').val(response.installments);
+                    $('#loan-principal-repayment').val(response.loanPrincipalRepayment);
+                },
+                error: function(xhr, status, error) {
+                    console.log('Error:', error);
+                }
+            });
+        })
+    });
+
+    $(document).ready(function () {
+        $("input[type='text']")
+            .on("keyup", function () {
+                if ($(this).val().length == $(this).attr("maxlength")) {
+                    $(this)
+                        .closest("div.form-group")
+                        .next()
+                        .find("input")
+                        .first()
+                        .focus();
+                }
+            })
+            .on("paste", function (e) {
+                var pastedData = e.originalEvent.clipboardData.getData("text");
+                var $this = $(this);
+                var maxLength = $this.attr("maxlength");
+                var remainingText = "";
+
+                // Fill the current input
+                $this.val(pastedData.substring(0, maxLength));
+                remainingText = pastedData.substring(maxLength);
+
+                // Distribute the remaining text among the next input fields
+                $this
+                    .closest("div.form-group")
+                    .nextAll()
+                    .find("input")
+                    .each(function () {
+                        if (remainingText.length === 0) return false;
+
+                        maxLength = $(this).attr("maxlength");
+                        $(this).val(remainingText.substring(0, maxLength));
+                        remainingText = remainingText.substring(maxLength);
+                    });
+            });
+    });
+</script>
